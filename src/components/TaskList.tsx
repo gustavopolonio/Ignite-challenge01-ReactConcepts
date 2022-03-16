@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { nanoid } from 'nanoid'
 
 import '../styles/tasklist.scss'
 
 import { FiTrash, FiCheckSquare } from 'react-icons/fi'
 
 interface Task {
-  id: number;
+  id: string;
   title: string;
   isComplete: boolean;
 }
@@ -16,14 +17,51 @@ export function TaskList() {
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if (!newTaskTitle) return
+
+    const id = nanoid()
+
+    const newTask = {
+      id: id,
+      title: newTaskTitle,
+      isComplete: false
+    }
+
+    setTasks([...tasks, newTask])
+    setNewTaskTitle('')
   }
 
-  function handleToggleTaskCompletion(id: number) {
+  function handleToggleTaskCompletion(id: string) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    
+    // const newTasks = tasks.map(task => task.id === id ? {
+    //   ...task,
+    //   isComplete: !task.isComplete
+    // } : {
+    //   ...task
+    // })
+    // console.log('newTasks', newTasks)
+    // setTasks(newTasks)
+
+    const newTasks = tasks.map(task => {
+      if (task.id === id) {
+        const obj = {
+          ...task,
+          isComplete: !task.isComplete
+        }
+        return obj
+      } else {
+        return task
+      }
+    })
+
+    setTasks(newTasks)
   }
 
-  function handleRemoveTask(id: number) {
+  function handleRemoveTask(id: string) {
     // Remova uma task da listagem pelo ID
+    const newTasks = tasks.filter(task => task.id !== id)
+    setTasks(newTasks)
   }
 
   return (
